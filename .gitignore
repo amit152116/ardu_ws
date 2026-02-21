@@ -1,0 +1,87 @@
+# --- Build & Installation Artifacts ---
+build/
+build_isolated/
+install/
+install_isolated/
+devel/
+log/
+logs/
+
+# --- CMake & Build System ---
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+ament_cmake_environment_hooks/
+ament_cmake_core/
+ament_cmake_export_dependencies/
+ament_cmake_export_definitions/
+ament_cmake_export_include_directories/
+ament_cmake_export_libraries/
+ament_cmake_export_link_flags/
+ament_cmake_export_targets/
+ament_cmake_symlink_install/
+
+# --- Compiled Binaries & Libraries ---
+*.o
+*.so
+*.a
+*.out
+*.lo
+*.la
+*.bin
+*.raw
+*.tlog
+*.tlog.raw
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# --- IDE & Editor ---
+.vscode/
+.idea/
+.cache/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.code-workspace
+
+# --- Project Specific ---
+terrain/
+docs/
+cacheDir/
+QGeoView/
+.claude/
+.opencode/
+
+# --- Build Artifacts ---
+*.build*
+*.parm
+*.png
+
+# --- ROS 2 Specific ---
+colcon.meta
+
+# --- Environment & Shell ---
+.env
+.venv/
+venv/
+*.sh~
+*.bash_history
+*.zsh_history
+*.info
+*.log
+*.pkl
+
+# --- System ---
+.DS_Store
+
+# --- Root Text Files (but keep CMakeLists.txt in src) ---
+*.pdf
+*.jpg
+!requirements.txt
+!swarminit.txt
+!src/*/CMakeLists.txt
