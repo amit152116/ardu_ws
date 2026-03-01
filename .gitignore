@@ -7,6 +7,12 @@ devel/
 log/
 logs/
 
+# --- Exclude any build or install directory anywhere ---
+**/build/
+**/install/
+**/build_*/
+**/install_*/
+
 # --- CMake & Build System ---
 CMakeCache.txt
 CMakeFiles/
