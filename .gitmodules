@@ -5,8 +5,8 @@
 
 [submodule "src/ardupilot"]
 	path = src/ardupilot
-	url = https://github.com/ArduPilot/ardupilot.git
-	branch = master
+	url = https://github.com/amit152116/ardupilot.git
+	branch = release/Copter-4.6.3
 
 [submodule "src/ardupilot_gazebo"]
 	path = src/ardupilot_gazebo
@@ -37,6 +37,7 @@
 	path = src/sdformat_urdf
 	url = https://github.com/ros/sdformat_urdf.git
 	branch = humble
+
 [submodule "src/micro_ros_msgs"]
 	path = src/micro_ros_msgs
 	url = https://github.com/micro-ROS/micro_ros_msgs.git

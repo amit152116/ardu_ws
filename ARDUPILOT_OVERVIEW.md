@@ -1,9 +1,9 @@
 # ArduPilot Repository Overview for UAV Swarm Development
 
 > **Purpose**: Comprehensive guide for developing autonomous UAV swarm systems and extending AP_DDS functionality in ArduPilot
-> 
+>
 > **Target Audience**: Intermediate developers working on ArduCopter swarm features
-> 
+>
 > **Last Updated**: March 2026
 
 ---
@@ -45,18 +45,18 @@ ardupilot/
 
 ### 1.2 Key Directories for Swarm Development
 
-| Directory | Purpose | Importance for Swarms |
-|-----------|---------|----------------------|
-| `ArduCopter/` | Vehicle-specific logic, flight modes | **Critical** - Main integration point |
-| `libraries/AP_DDS/` | ROS 2 DDS integration | **Critical** - Communication backbone |
-| `libraries/GCS_MAVLink/` | MAVLink protocol handling | **High** - Inter-vehicle comms |
-| `libraries/AP_Avoidance/` | Collision avoidance | **High** - Swarm safety |
-| `libraries/AP_Follow/` | Follow mode implementation | **High** - Formation flying |
-| `libraries/AP_Mission/` | Mission planning & execution | **High** - Coordinated missions |
-| `libraries/AP_AHRS/` | Attitude & heading reference | **Medium** - State estimation |
-| `libraries/AP_GPS/` | GPS/GNSS handling | **Medium** - Positioning |
-| `libraries/AP_NavEKF3/` | Navigation EKF | **Medium** - State estimation |
-| `Tools/autotest/` | Automated testing | **Medium** - Swarm testing |
+| Directory                 | Purpose                              | Importance for Swarms                 |
+| ------------------------- | ------------------------------------ | ------------------------------------- |
+| `ArduCopter/`             | Vehicle-specific logic, flight modes | **Critical** - Main integration point |
+| `libraries/AP_DDS/`       | ROS 2 DDS integration                | **Critical** - Communication backbone |
+| `libraries/GCS_MAVLink/`  | MAVLink protocol handling            | **High** - Inter-vehicle comms        |
+| `libraries/AP_Avoidance/` | Collision avoidance                  | **High** - Swarm safety               |
+| `libraries/AP_Follow/`    | Follow mode implementation           | **High** - Formation flying           |
+| `libraries/AP_Mission/`   | Mission planning & execution         | **High** - Coordinated missions       |
+| `libraries/AP_AHRS/`      | Attitude & heading reference         | **Medium** - State estimation         |
+| `libraries/AP_GPS/`       | GPS/GNSS handling                    | **Medium** - Positioning              |
+| `libraries/AP_NavEKF3/`   | Navigation EKF                       | **Medium** - State estimation         |
+| `Tools/autotest/`         | Automated testing                    | **Medium** - Swarm testing            |
 
 ---
 
@@ -97,6 +97,7 @@ Initialization → Scheduler → Fast Loop (400Hz) → Slow Loops (varying rates
 ```
 
 **Key Files**:
+
 - `Copter.cpp` - Main setup and loop
 - `system.cpp` - System initialization
 - `Attitude.cpp` - Attitude control
@@ -106,16 +107,17 @@ Initialization → Scheduler → Fast Loop (400Hz) → Slow Loops (varying rates
 
 **Location**: `ArduCopter/mode*.cpp`
 
-| Mode | File | Swarm Relevance |
-|------|------|-----------------|
-| **GUIDED** | `mode_guided.cpp` | **Critical** - External control via MAVLink/DDS |
-| **AUTO** | `mode_auto.cpp` | **High** - Mission execution |
-| **LOITER** | `mode_loiter.cpp` | **High** - Position hold |
-| **RTL** | `mode_rtl.cpp` | **High** - Return to launch |
-| **FOLLOW** | `mode_follow.cpp` | **High** - Follow another vehicle |
-| **AVOID_ADSB** | `mode_avoid_adsb.cpp` | **Medium** - Collision avoidance |
+| Mode           | File                  | Swarm Relevance                                 |
+| -------------- | --------------------- | ----------------------------------------------- |
+| **GUIDED**     | `mode_guided.cpp`     | **Critical** - External control via MAVLink/DDS |
+| **AUTO**       | `mode_auto.cpp`       | **High** - Mission execution                    |
+| **LOITER**     | `mode_loiter.cpp`     | **High** - Position hold                        |
+| **RTL**        | `mode_rtl.cpp`        | **High** - Return to launch                     |
+| **FOLLOW**     | `mode_follow.cpp`     | **High** - Follow another vehicle               |
+| **AVOID_ADSB** | `mode_avoid_adsb.cpp` | **Medium** - Collision avoidance                |
 
 **Adding Custom Swarm Mode**:
+
 1. Create `mode_swarm.cpp`
 2. Inherit from `Mode` class
 3. Implement required methods: `init()`, `run()`, `exit()`
@@ -147,25 +149,30 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
 ### 3.1 Communication Libraries
 
 #### A. AP_DDS (ROS 2 Integration)
+
 **Location**: `libraries/AP_DDS/`
 **Purpose**: DDS-XRCE bridge for ROS 2 communication
 
 **Key Files**:
+
 - `AP_DDS_Client.cpp` - Main DDS client
 - `AP_DDS_Topic_Table.h` - Published/subscribed topics
 - `AP_DDS_Service_Table.h` - ROS 2 services
 - `AP_DDS_config.h` - Feature configuration
 
 **Current Topics** (see section 4 for details):
+
 - Publishers: Pose, velocity, GPS, battery, clock, etc.
 - Subscribers: External control, joy, transforms
 - Services: Arm/disarm, mode switch, takeoff
 
 #### B. GCS_MAVLink
+
 **Location**: `libraries/GCS_MAVLink/`
 **Purpose**: MAVLink protocol for GCS and vehicle-to-vehicle comms
 
 **Key Features**:
+
 - Message routing
 - Multi-channel support
 - Vehicle-to-vehicle messaging
@@ -176,6 +183,7 @@ const AP_Scheduler::Task Copter::scheduler_tasks[] = {
 ### 3.2 Navigation & Control Libraries
 
 #### A. AP_AHRS (Attitude Heading Reference System)
+
 **Location**: `libraries/AP_AHRS/`
 **Purpose**: Provides vehicle attitude, position, velocity estimates
 
@@ -187,16 +195,19 @@ ahrs.get_position(current_loc);
 ```
 
 #### B. AC_WPNav (Waypoint Navigation)
+
 **Location**: `libraries/AC_WPNav/`
 **Purpose**: Waypoint navigation controller
 
 **Swarm Use**: Coordinated waypoint following, formation waypoints
 
 #### C. AC_Avoidance
+
 **Location**: `libraries/AC_Avoidance/`
 **Purpose**: Object avoidance (Simple Avoidance and BendyRuler)
 
 **Integration Points**:
+
 - Proximity sensors
 - ADS-B avoidance
 - Custom avoidance backends
@@ -204,19 +215,25 @@ ahrs.get_position(current_loc);
 ### 3.3 Sensor Libraries
 
 #### A. AP_GPS
+
 **Location**: `libraries/AP_GPS/`
+
 - Multi-GPS support
 - RTK GPS
 - GPS blending
 
 #### B. AP_RangeFinder
+
 **Location**: `libraries/AP_RangeFinder/`
+
 - Distance sensing
 - Terrain following
 - MAVLink rangefinder (for external data)
 
 #### C. AP_Proximity
+
 **Location**: `libraries/AP_Proximity/`
+
 - 360° proximity sensing
 - Obstacle detection
 - Multiple sensor backends
@@ -224,10 +241,12 @@ ahrs.get_position(current_loc);
 ### 3.4 Mission & Planning Libraries
 
 #### A. AP_Mission
+
 **Location**: `libraries/AP_Mission/`
 **Purpose**: Mission storage and execution
 
 **Key Features**:
+
 - Mission item storage in EEPROM
 - Mission upload/download
 - DO_JUMP, DO_REPEAT support
@@ -235,15 +254,18 @@ ahrs.get_position(current_loc);
 **Swarm Extension**: Could add swarm-specific mission commands
 
 #### B. AP_Follow
+
 **Location**: `libraries/AP_Follow/`
 **Purpose**: Follow another vehicle
 
 **Current Implementation**:
+
 - Follows via MAVLink position
 - Configurable offset
 - Lead vehicle tracking
 
 **Swarm Enhancement Ideas**:
+
 - Multiple leader following
 - Formation maintenance
 - Dynamic role switching
@@ -295,43 +317,43 @@ libraries/AP_DDS/
 
 #### Publishers (ArduPilot → ROS 2)
 
-| Topic | ROS 2 Type | Rate | Config Flag | Purpose |
-|-------|-----------|------|-------------|---------|
-| `/ap/state` | `ardupilot_msgs/msg/State` | 10Hz | `AP_DDS_STATE_PUB_ENABLED` | System state |
-| `/ap/ekf_status` | `ardupilot_msgs/msg/EKFStatus` | 10Hz | `AP_DDS_EKF_STATUS_PUB_ENABLED` | EKF health |
-| `/ap/time` | `builtin_interfaces/msg/Time` | 100Hz | `AP_DDS_TIME_PUB_ENABLED` | System time |
-| `/ap/clock` | `rosgraph_msgs/msg/Clock` | 100Hz | `AP_DDS_CLOCK_PUB_ENABLED` | ROS clock |
-| `/ap/geopose/filtered` | `geographic_msgs/msg/GeoPoseStamped` | 30Hz | `AP_DDS_GEOPOSE_PUB_ENABLED` | Global pose |
-| `/ap/navsat/nav_sat_fix` | `sensor_msgs/msg/NavSatFix` | Varies | `AP_DDS_NAVSATFIX_PUB_ENABLED` | GPS data |
-| `/ap/pose/filtered` | `geometry_msgs/msg/PoseStamped` | 30Hz | `AP_DDS_LOCAL_POSE_PUB_ENABLED` | Local pose |
-| `/ap/twist/filtered` | `geometry_msgs/msg/TwistStamped` | 30Hz | `AP_DDS_LOCAL_VEL_PUB_ENABLED` | Velocity |
-| `/ap/imu/experimental/data` | `sensor_msgs/msg/Imu` | 50Hz | `AP_DDS_IMU_PUB_ENABLED` | IMU data |
-| `/ap/battery/battery_state` | `sensor_msgs/msg/BatteryState` | 1Hz | `AP_DDS_BATTERY_STATE_PUB_ENABLED` | Battery |
-| `/ap/airspeed` | `geometry_msgs/msg/Vector3Stamped` | 1Hz | `AP_DDS_AIRSPEED_PUB_ENABLED` | Airspeed |
-| `/tf_static` | `tf2_msgs/msg/TFMessage` | On change | `AP_DDS_STATIC_TF_PUB_ENABLED` | Static TFs |
-| `/ap/gps_global_origin/filtered` | `geographic_msgs/msg/GeoPointStamped` | 1Hz | `AP_DDS_GPS_GLOBAL_ORIGIN_PUB_ENABLED` | GPS origin |
+| Topic                            | ROS 2 Type                            | Rate      | Config Flag                            | Purpose      |
+| -------------------------------- | ------------------------------------- | --------- | -------------------------------------- | ------------ |
+| `/ap/state`                      | `ardupilot_msgs/msg/State`            | 10Hz      | `AP_DDS_STATE_PUB_ENABLED`             | System state |
+| `/ap/ekf_status`                 | `ardupilot_msgs/msg/EKFStatus`        | 10Hz      | `AP_DDS_EKF_STATUS_PUB_ENABLED`        | EKF health   |
+| `/ap/time`                       | `builtin_interfaces/msg/Time`         | 100Hz     | `AP_DDS_TIME_PUB_ENABLED`              | System time  |
+| `/ap/clock`                      | `rosgraph_msgs/msg/Clock`             | 100Hz     | `AP_DDS_CLOCK_PUB_ENABLED`             | ROS clock    |
+| `/ap/geopose/filtered`           | `geographic_msgs/msg/GeoPoseStamped`  | 30Hz      | `AP_DDS_GEOPOSE_PUB_ENABLED`           | Global pose  |
+| `/ap/navsat/nav_sat_fix`         | `sensor_msgs/msg/NavSatFix`           | Varies    | `AP_DDS_NAVSATFIX_PUB_ENABLED`         | GPS data     |
+| `/ap/pose/filtered`              | `geometry_msgs/msg/PoseStamped`       | 30Hz      | `AP_DDS_LOCAL_POSE_PUB_ENABLED`        | Local pose   |
+| `/ap/twist/filtered`             | `geometry_msgs/msg/TwistStamped`      | 30Hz      | `AP_DDS_LOCAL_VEL_PUB_ENABLED`         | Velocity     |
+| `/ap/imu/experimental/data`      | `sensor_msgs/msg/Imu`                 | 50Hz      | `AP_DDS_IMU_PUB_ENABLED`               | IMU data     |
+| `/ap/battery/battery_state`      | `sensor_msgs/msg/BatteryState`        | 1Hz       | `AP_DDS_BATTERY_STATE_PUB_ENABLED`     | Battery      |
+| `/ap/airspeed`                   | `geometry_msgs/msg/Vector3Stamped`    | 1Hz       | `AP_DDS_AIRSPEED_PUB_ENABLED`          | Airspeed     |
+| `/tf_static`                     | `tf2_msgs/msg/TFMessage`              | On change | `AP_DDS_STATIC_TF_PUB_ENABLED`         | Static TFs   |
+| `/ap/gps_global_origin/filtered` | `geographic_msgs/msg/GeoPointStamped` | 1Hz       | `AP_DDS_GPS_GLOBAL_ORIGIN_PUB_ENABLED` | GPS origin   |
 
 #### Subscribers (ROS 2 → ArduPilot)
 
-| Topic | ROS 2 Type | Config Flag | Purpose |
-|-------|-----------|-------------|---------|
-| `/ap/cmd_vel` | `geometry_msgs/msg/TwistStamped` | `AP_DDS_VEL_CTRL_ENABLED` | Velocity control |
-| `/ap/cmd_gps_pose` | `ardupilot_msgs/msg/GlobalPosition` | `AP_DDS_GLOBAL_POS_CTRL_ENABLED` | Global position cmd |
-| `/ap/joy` | `sensor_msgs/msg/Joy` | `AP_DDS_JOY_SUB_ENABLED` | Joystick input |
-| `/ap/tf` | `tf2_msgs/msg/TFMessage` | `AP_DDS_DYNAMIC_TF_SUB_ENABLED` | Dynamic transforms |
-| `/ap/vision_odom` | `nav_msgs/msg/Odometry` | `AP_DDS_VISUALODOM_ENABLED` | Visual odometry |
-| `/ap/rangefinder` | `sensor_msgs/msg/Range` | `AP_DDS_RANGEFINDER_SUB_ENABLED` | External rangefinder |
-| `/ap/obstacle` | `sensor_msgs/msg/PointCloud2` | `AP_DDS_OBSTACLE_DISTANCE_SUB_ENABLED` | Obstacle data |
+| Topic              | ROS 2 Type                          | Config Flag                            | Purpose              |
+| ------------------ | ----------------------------------- | -------------------------------------- | -------------------- |
+| `/ap/cmd_vel`      | `geometry_msgs/msg/TwistStamped`    | `AP_DDS_VEL_CTRL_ENABLED`              | Velocity control     |
+| `/ap/cmd_gps_pose` | `ardupilot_msgs/msg/GlobalPosition` | `AP_DDS_GLOBAL_POS_CTRL_ENABLED`       | Global position cmd  |
+| `/ap/joy`          | `sensor_msgs/msg/Joy`               | `AP_DDS_JOY_SUB_ENABLED`               | Joystick input       |
+| `/ap/tf`           | `tf2_msgs/msg/TFMessage`            | `AP_DDS_DYNAMIC_TF_SUB_ENABLED`        | Dynamic transforms   |
+| `/ap/vision_odom`  | `nav_msgs/msg/Odometry`             | `AP_DDS_VISUALODOM_ENABLED`            | Visual odometry      |
+| `/ap/rangefinder`  | `sensor_msgs/msg/Range`             | `AP_DDS_RANGEFINDER_SUB_ENABLED`       | External rangefinder |
+| `/ap/obstacle`     | `sensor_msgs/msg/PointCloud2`       | `AP_DDS_OBSTACLE_DISTANCE_SUB_ENABLED` | Obstacle data        |
 
 #### Services
 
-| Service | ROS 2 Type | Config Flag | Purpose |
-|---------|-----------|-------------|---------|
-| `/ap/arm_motors` | `ardupilot_msgs/srv/ArmMotors` | `AP_DDS_ARM_SERVER_ENABLED` | Arm/disarm |
-| `/ap/mode_switch` | `ardupilot_msgs/srv/ModeSwitch` | `AP_DDS_MODE_SWITCH_SERVER_ENABLED` | Change mode |
-| `/ap/takeoff` | `ardupilot_msgs/srv/Takeoff` | `AP_DDS_VTOL_TAKEOFF_SERVER_ENABLED` | Takeoff |
-| `/ap/parameter` | Various | `AP_DDS_PARAMETER_SERVER_ENABLED` | Parameter get/set |
-| `/ap/prearm_check` | `ardupilot_msgs/srv/PrearmCheck` | `AP_DDS_ARM_CHECK_SERVER_ENABLED` | Pre-arm check |
+| Service            | ROS 2 Type                       | Config Flag                          | Purpose           |
+| ------------------ | -------------------------------- | ------------------------------------ | ----------------- |
+| `/ap/arm_motors`   | `ardupilot_msgs/srv/ArmMotors`   | `AP_DDS_ARM_SERVER_ENABLED`          | Arm/disarm        |
+| `/ap/mode_switch`  | `ardupilot_msgs/srv/ModeSwitch`  | `AP_DDS_MODE_SWITCH_SERVER_ENABLED`  | Change mode       |
+| `/ap/takeoff`      | `ardupilot_msgs/srv/Takeoff`     | `AP_DDS_VTOL_TAKEOFF_SERVER_ENABLED` | Takeoff           |
+| `/ap/parameter`    | Various                          | `AP_DDS_PARAMETER_SERVER_ENABLED`    | Parameter get/set |
+| `/ap/prearm_check` | `ardupilot_msgs/srv/PrearmCheck` | `AP_DDS_ARM_CHECK_SERVER_ENABLED`    | Pre-arm check     |
 
 ### 4.4 Configuration System
 
@@ -354,6 +376,7 @@ libraries/AP_DDS/
 ```
 
 **How it Works**:
+
 - `#ifndef` allows build-time overrides in board `hwdef.dat`
 - Features with dependencies automatically disable if dependency missing
 - Flash-size-dependent features (e.g., VisualOdom requires >1MB flash)
@@ -363,9 +386,11 @@ libraries/AP_DDS/
 **Example: Adding Swarm State Publisher**
 
 #### Step 1: Define Message (If Custom)
+
 Create or use existing ROS 2 message in `Idl/` directory
 
 #### Step 2: Add to Config (`AP_DDS_config.h`)
+
 ```cpp
 #ifndef AP_DDS_SWARM_STATE_PUB_ENABLED
 #define AP_DDS_SWARM_STATE_PUB_ENABLED 1
@@ -377,6 +402,7 @@ Create or use existing ROS 2 message in `Idl/` directory
 ```
 
 #### Step 3: Add Topic Entry (`AP_DDS_Topic_Table.h`)
+
 ```cpp
 #if AP_DDS_SWARM_STATE_PUB_ENABLED
 {
@@ -395,19 +421,20 @@ Create or use existing ROS 2 message in `Idl/` directory
 ```
 
 #### Step 4: Add Update Function (`AP_DDS_Client.cpp`)
+
 ```cpp
 #if AP_DDS_SWARM_STATE_PUB_ENABLED
 void AP_DDS_Client::update_swarm_state_topic()
 {
-    if (last_swarm_state_update_ms == 0 || 
+    if (last_swarm_state_update_ms == 0 ||
         AP_HAL::millis() - last_swarm_state_update_ms >= AP_DDS_DELAY_SWARM_STATE_TOPIC_MS) {
-        
+
         // Populate message
         your_pkg_msg_SwarmState msg {};
         msg.neighbor_count = get_neighbor_count();
         msg.formation_state = get_formation_state();
         // ... fill other fields
-        
+
         // Publish
         const bool success = write_swarm_state_msg(msg);
         if (success) {
@@ -419,7 +446,9 @@ void AP_DDS_Client::update_swarm_state_topic()
 ```
 
 #### Step 5: Call from Update Loop
+
 In `AP_DDS_Client::update()`:
+
 ```cpp
 #if AP_DDS_SWARM_STATE_PUB_ENABLED
     update_swarm_state_topic();
@@ -431,6 +460,7 @@ In `AP_DDS_Client::update()`:
 **Example: Adding Swarm Command Subscriber**
 
 #### Step 1: Add to Config
+
 ```cpp
 #ifndef AP_DDS_SWARM_CMD_SUB_ENABLED
 #define AP_DDS_SWARM_CMD_SUB_ENABLED 1
@@ -438,6 +468,7 @@ In `AP_DDS_Client::update()`:
 ```
 
 #### Step 2: Add Subscription Entry (`AP_DDS_Topic_Table.h`)
+
 ```cpp
 #if AP_DDS_SWARM_CMD_SUB_ENABLED
 {
@@ -457,7 +488,9 @@ In `AP_DDS_Client::update()`:
 ```
 
 #### Step 3: Implement Callback
+
 Create `AP_DDS_SwarmCommand.cpp`:
+
 ```cpp
 #include "AP_DDS_Client.h"
 #if AP_DDS_SWARM_CMD_SUB_ENABLED
@@ -471,10 +504,10 @@ void AP_DDS_Client::on_swarm_command(uxrSession* session,
                                       void* args)
 {
     your_pkg_msg_SwarmCommand msg;
-    
+
     // Deserialize message
     bool success = your_pkg_msg_SwarmCommand_deserialize_topic(ub, &msg);
-    
+
     if (success) {
         // Process command
         handle_swarm_command(msg);
@@ -520,6 +553,7 @@ Set `SERIALn_PROTOCOL = 45` (DDS) on desired serial port
 ArduPilot uses WAF (Python-based build system)
 
 **Key Commands**:
+
 ```bash
 # Configure for SITL
 ./waf configure --board sitl
@@ -543,6 +577,7 @@ ArduPilot uses WAF (Python-based build system)
 ### 5.2 ROS 2 Integration Build
 
 **Using colcon** (your current setup):
+
 ```bash
 cd ~/ardu_ws
 colcon build --packages-select ardupilot_sitl
@@ -625,13 +660,16 @@ ros2 launch your_swarm_pkg swarm_sim.launch.py
 **Example: Adding AP_Swarm library**
 
 #### Step 1: Create Directory Structure
+
 ```bash
 mkdir libraries/AP_Swarm
 cd libraries/AP_Swarm
 ```
 
 #### Step 2: Create Files
+
 **`AP_Swarm.h`**:
+
 ```cpp
 #pragma once
 
@@ -645,33 +683,33 @@ cd libraries/AP_Swarm
 class AP_Swarm {
 public:
     AP_Swarm();
-    
+
     // Initialize swarm system
     void init();
-    
+
     // Update (called from scheduler)
     void update();
-    
+
     // Add/remove neighbors
     void add_neighbor(uint8_t sysid, const Location& loc);
     void remove_neighbor(uint8_t sysid);
-    
+
     // Formation control
     void set_formation_type(uint8_t type);
     Vector3f get_formation_offset(uint8_t position);
-    
+
     // Get swarm state
     uint8_t get_neighbor_count() const { return _neighbor_count; }
-    
+
     // Singleton access
     static AP_Swarm* get_singleton() { return _singleton; }
-    
+
     // Parameters
     static const struct AP_Param::GroupInfo var_info[];
-    
+
 private:
     static AP_Swarm* _singleton;
-    
+
     struct Neighbor {
         uint8_t sysid;
         Location location;
@@ -679,10 +717,10 @@ private:
         uint32_t last_update_ms;
         bool active;
     };
-    
+
     Neighbor _neighbors[MAX_SWARM_NEIGHBORS];
     uint8_t _neighbor_count;
-    
+
     // Parameters
     AP_Int8 _enable;
     AP_Int8 _max_neighbors;
@@ -698,6 +736,7 @@ namespace AP {
 ```
 
 **`AP_Swarm_config.h`**:
+
 ```cpp
 #pragma once
 
@@ -717,6 +756,7 @@ namespace AP {
 ```
 
 **`AP_Swarm.cpp`**:
+
 ```cpp
 #include "AP_Swarm.h"
 
@@ -732,20 +772,20 @@ const AP_Param::GroupInfo AP_Swarm::var_info[] = {
     // @Description: Enable swarm functionality
     // @Values: 0:Disabled,1:Enabled
     AP_GROUPINFO_FLAGS("ENABLE", 1, AP_Swarm, _enable, 0, AP_PARAM_FLAG_ENABLE),
-    
+
     // @Param: MAX_NBR
     // @DisplayName: Maximum Neighbors
     // @Description: Maximum number of swarm neighbors to track
     // @Range: 1 20
     AP_GROUPINFO("MAX_NBR", 2, AP_Swarm, _max_neighbors, MAX_SWARM_NEIGHBORS),
-    
+
     // @Param: SEP_DIST
     // @DisplayName: Separation Distance
     // @Description: Minimum separation distance from neighbors in meters
     // @Range: 1 50
     // @Units: m
     AP_GROUPINFO("SEP_DIST", 3, AP_Swarm, _separation_distance, 5.0f),
-    
+
     AP_GROUPEND
 };
 
@@ -760,13 +800,13 @@ void AP_Swarm::init()
     if (!_enable) {
         return;
     }
-    
+
     // Initialize neighbor array
     for (uint8_t i = 0; i < MAX_SWARM_NEIGHBORS; i++) {
         _neighbors[i].active = false;
     }
     _neighbor_count = 0;
-    
+
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Swarm: Initialized");
 }
 
@@ -775,7 +815,7 @@ void AP_Swarm::update()
     if (!_enable) {
         return;
     }
-    
+
     // Update logic here
     // - Check neighbor timeouts
     // - Update formation positions
@@ -793,7 +833,7 @@ void AP_Swarm::add_neighbor(uint8_t sysid, const Location& loc)
             return;
         }
     }
-    
+
     // Add new neighbor
     if (_neighbor_count < _max_neighbors) {
         for (uint8_t i = 0; i < MAX_SWARM_NEIGHBORS; i++) {
@@ -821,6 +861,7 @@ namespace AP {
 ```
 
 **`wscript`**:
+
 ```python
 #!/usr/bin/env python
 # encoding: utf-8
@@ -841,12 +882,13 @@ def build(bld):
 #### Step 3: Integrate with Vehicle
 
 **In `ArduCopter/Copter.h`**:
+
 ```cpp
 #include <AP_Swarm/AP_Swarm.h>
 
 class Copter : public AP_Vehicle {
     // ... other members
-    
+
 #if AP_SWARM_ENABLED
     AP_Swarm swarm;
 #endif
@@ -854,11 +896,12 @@ class Copter : public AP_Vehicle {
 ```
 
 **In `ArduCopter/system.cpp`**:
+
 ```cpp
 void Copter::init_ardupilot()
 {
     // ... existing initialization
-    
+
 #if AP_SWARM_ENABLED
     swarm.init();
 #endif
@@ -866,10 +909,11 @@ void Copter::init_ardupilot()
 ```
 
 **In `ArduCopter/Copter.cpp` scheduler**:
+
 ```cpp
 const AP_Scheduler::Task Copter::scheduler_tasks[] = {
     // ... existing tasks
-    
+
 #if AP_SWARM_ENABLED
     SCHED_TASK(update_swarm,        10,  100),
 #endif
@@ -884,14 +928,15 @@ void Copter::update_swarm()
 ```
 
 **In `ArduCopter/Parameters.cpp`**:
+
 ```cpp
 const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // ... existing parameters
-    
+
 #if AP_SWARM_ENABLED
     AP_SUBGROUPINFO(swarm, "SWARM_", 25, ParametersG2, AP_Swarm),
 #endif
-    
+
     AP_GROUPEND
 };
 ```
@@ -899,6 +944,7 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
 ### 6.3 Adding Parameters
 
 **Parameter Documentation Format**:
+
 ```cpp
 // @Param: PARAM_NAME
 // @DisplayName: Human Readable Name
@@ -912,6 +958,7 @@ AP_GROUPINFO("PARAM_NAME", index, Class, _variable, default_value),
 ```
 
 **Parameter Groups**:
+
 - Use `AP_SUBGROUPINFO` for nested parameter groups
 - Index must be unique within group
 - Use `ParametersG2` for new parameters to avoid EEPROM format changes
@@ -963,6 +1010,7 @@ void Copter::Log_Write_Swarm()
 ### 7.1 Swarm Architecture Patterns
 
 #### Pattern 1: Centralized Control
+
 ```
 Ground Station / ROS 2 Node
          ↓
@@ -977,6 +1025,7 @@ Individual Vehicles (via DDS/MAVLink)
 **Implementation**: Use DDS subscribers for commands, publishers for state
 
 #### Pattern 2: Decentralized (Consensus-based)
+
 ```
 Vehicle 1 ←→ Vehicle 2
     ↕           ↕
@@ -986,12 +1035,14 @@ Vehicle 4 ←→ Vehicle 3
 **Pros**: Robust, scalable
 **Cons**: Complex, requires consensus algorithms
 
-**Implementation**: 
+**Implementation**:
+
 - MAVLink vehicle-to-vehicle messaging
 - DDS for local coordination with companion computers
 - Custom swarm library for consensus logic
 
 #### Pattern 3: Hybrid (Leader-Follower)
+
 ```
     Leader Vehicle
     ↙   ↓   ↘
@@ -1006,18 +1057,19 @@ Vehicle 4 ←→ Vehicle 3
 ### 7.2 Key Swarm Capabilities to Implement
 
 #### A. Neighbor Awareness
+
 ```cpp
 // Via MAVLink
 void handle_mavlink_position_update(mavlink_message_t& msg) {
     mavlink_global_position_int_t packet;
     mavlink_msg_global_position_int_decode(&msg, &packet);
-    
+
     // Update neighbor in swarm library
     Location neighbor_loc;
     neighbor_loc.lat = packet.lat;
     neighbor_loc.lng = packet.lon;
     neighbor_loc.alt = packet.alt;
-    
+
     AP::swarm()->add_neighbor(msg.sysid, neighbor_loc);
 }
 
@@ -1026,6 +1078,7 @@ void handle_mavlink_position_update(mavlink_message_t& msg) {
 ```
 
 #### B. Formation Control
+
 ```cpp
 // Get formation offset for this vehicle
 Vector3f formation_offset = AP::swarm()->get_formation_offset(my_position_in_formation);
@@ -1040,6 +1093,7 @@ wp_nav->set_wp_destination(target_loc);
 ```
 
 #### C. Collision Avoidance
+
 ```cpp
 // In swarm update loop
 void AP_Swarm::check_collisions() {
@@ -1047,12 +1101,12 @@ void AP_Swarm::check_collisions() {
     if (!AP::ahrs().get_position(my_loc)) {
         return;
     }
-    
+
     for (uint8_t i = 0; i < MAX_SWARM_NEIGHBORS; i++) {
         if (!_neighbors[i].active) continue;
-        
+
         float distance = my_loc.get_distance(_neighbors[i].location);
-        
+
         if (distance < _separation_distance) {
             // Collision imminent!
             handle_collision_avoidance(i, distance);
@@ -1064,17 +1118,18 @@ void AP_Swarm::handle_collision_avoidance(uint8_t neighbor_idx, float distance) 
     // Calculate avoidance vector
     Location my_loc;
     AP::ahrs().get_position(my_loc);
-    
+
     Vector2f avoid_vector = my_loc.get_distance_NE(_neighbors[neighbor_idx].location);
     avoid_vector.normalize();
     avoid_vector *= -1;  // Away from neighbor
-    
+
     // Send avoidance command to AC_Avoidance
     // This integrates with existing avoidance system
 }
 ```
 
 #### D. Mission Synchronization
+
 ```cpp
 // Synchronized mission start
 void AP_Swarm::sync_mission_start() {
@@ -1082,10 +1137,10 @@ void AP_Swarm::sync_mission_start() {
         // Wait for leader's start signal
         return;
     }
-    
+
     // Leader broadcasts start time
     uint32_t start_time_ms = AP_HAL::millis() + MISSION_START_DELAY_MS;
-    
+
     // Send via MAVLink to all neighbors
     for (uint8_t i = 0; i < _neighbor_count; i++) {
         mavlink_msg_mission_start_send(
@@ -1095,7 +1150,7 @@ void AP_Swarm::sync_mission_start() {
             start_time_ms
         );
     }
-    
+
     // Schedule own mission start
     _mission_start_time_ms = start_time_ms;
 }
@@ -1106,6 +1161,7 @@ void AP_Swarm::sync_mission_start() {
 #### MAVLink Vehicle-to-Vehicle
 
 **Enable in parameters**:
+
 ```
 SR0_POSITION = 10    # Position at 10Hz
 SR0_EXTRA1 = 10      # Attitude at 10Hz
@@ -1113,6 +1169,7 @@ SR0_EXTRA1 = 10      # Attitude at 10Hz
 
 **Custom MAVLink messages**:
 Create in `modules/mavlink/ardupilotmega.xml`:
+
 ```xml
 <message id="12345" name="SWARM_STATE">
   <description>Swarm state message</description>
@@ -1126,6 +1183,7 @@ Create in `modules/mavlink/ardupilotmega.xml`:
 #### DDS Topics for Swarm
 
 **Publish swarm state**:
+
 ```
 /swarm/vehicle_N/state          # Individual state
 /swarm/formation/status         # Formation status
@@ -1133,6 +1191,7 @@ Create in `modules/mavlink/ardupilotmega.xml`:
 ```
 
 **Subscribe to commands**:
+
 ```
 /swarm/command/formation        # Formation commands
 /swarm/command/mission          # Mission commands
@@ -1142,12 +1201,13 @@ Create in `modules/mavlink/ardupilotmega.xml`:
 ### 7.4 Safety Considerations
 
 #### Geofence for Swarms
+
 ```cpp
 // Expand geofence based on swarm size
 void AP_Swarm::update_geofence() {
     AC_Fence* fence = AP::fence();
     if (fence == nullptr) return;
-    
+
     // Add safety margin based on neighbor count
     float safety_margin = _neighbor_count * _separation_distance * 0.5f;
     fence->set_boundary_margin(safety_margin);
@@ -1155,6 +1215,7 @@ void AP_Swarm::update_geofence() {
 ```
 
 #### Failsafe Behavior
+
 ```cpp
 // In ArduCopter/failsafe.cpp
 void Copter::failsafe_swarm() {
@@ -1162,7 +1223,7 @@ void Copter::failsafe_swarm() {
     if (swarm.is_enabled() && swarm.collision_imminent()) {
         // Emergency land or RTL
         set_mode(Mode::Number::LAND, ModeReason::SWARM_COLLISION);
-        
+
         // Notify other swarm members
         swarm.broadcast_emergency();
     }
@@ -1171,6 +1232,7 @@ void Copter::failsafe_swarm() {
 ```
 
 #### Emergency Separation
+
 ```cpp
 void AP_Swarm::emergency_separate() {
     // Each vehicle moves in unique direction based on ID
@@ -1179,7 +1241,7 @@ void AP_Swarm::emergency_separate() {
         cosf(angle) * EMERGENCY_SEPARATION_DISTANCE,
         sinf(angle) * EMERGENCY_SEPARATION_DISTANCE
     );
-    
+
     // Command immediate position offset
     // This overrides normal navigation
 }
@@ -1192,11 +1254,12 @@ void AP_Swarm::emergency_separate() {
 ### 8.1 SITL Multi-Vehicle Testing
 
 **Start multiple vehicles**:
+
 ```bash
 # Terminal 1 - Vehicle 1
 sim_vehicle.py -v ArduCopter -I0 --out=udp:127.0.0.1:14550
 
-# Terminal 2 - Vehicle 2  
+# Terminal 2 - Vehicle 2
 sim_vehicle.py -v ArduCopter -I1 --out=udp:127.0.0.1:14551
 
 # Terminal 3 - Vehicle 3
@@ -1204,6 +1267,7 @@ sim_vehicle.py -v ArduCopter -I2 --out=udp:127.0.0.1:14552
 ```
 
 **With DDS**:
+
 ```bash
 # Start Micro XRCE-DDS Agent for each
 MicroXRCEAgent udp4 -p 2019  # For vehicle 1
@@ -1212,6 +1276,7 @@ MicroXRCEAgent udp4 -p 2021  # For vehicle 3
 ```
 
 **SITL parameters for DDS**:
+
 ```
 DDS_ENABLE = 1
 DDS_UDP_PORT = 2019  # Different for each vehicle
@@ -1220,6 +1285,7 @@ DDS_UDP_PORT = 2019  # Different for each vehicle
 ### 8.2 Debugging Tools
 
 #### GDB Debugging
+
 ```bash
 # Build with debug symbols
 ./waf configure --board sitl --debug
@@ -1230,6 +1296,7 @@ gdb --args build/sitl/bin/arducopter --home LAT,LON,ALT,HDG
 ```
 
 #### MAVProxy
+
 ```bash
 # Connect to vehicle
 mavproxy.py --master=udp:127.0.0.1:14550
@@ -1242,6 +1309,7 @@ MAV> takeoff 10             # Takeoff to 10m
 ```
 
 #### ROS 2 DDS Introspection
+
 ```bash
 # List topics
 ros2 topic list
@@ -1260,12 +1328,14 @@ ros2 bag record -a  # Record all topics
 ### 8.3 Logging & Analysis
 
 #### Enable logging
+
 ```cpp
 // In ArduCopter
 AP::logger().Write_Message("SWARM: Formation error: %.2f", error);
 ```
 
 #### Download and analyze logs
+
 ```bash
 # Download from vehicle
 mavproxy.py --master=/dev/ttyUSB0
@@ -1280,6 +1350,7 @@ MAVExplorer.py latest.bin
 ```
 
 #### Custom log analysis
+
 ```python
 from pymavlink import mavutil
 
@@ -1299,6 +1370,7 @@ while True:
 **Location**: `libraries/AP_Swarm/tests/`
 
 **Example test** (`test_swarm.cpp`):
+
 ```cpp
 #include <AP_gtest.h>
 #include <AP_Swarm/AP_Swarm.h>
@@ -1307,14 +1379,14 @@ TEST(AP_Swarm, AddNeighbor)
 {
     AP_Swarm swarm;
     swarm.init();
-    
+
     Location loc;
     loc.lat = 353947000;  // Canberra
     loc.lng = 1491238000;
     loc.alt = 58400;  // 584m
-    
+
     swarm.add_neighbor(2, loc);
-    
+
     EXPECT_EQ(swarm.get_neighbor_count(), 1);
 }
 
@@ -1323,9 +1395,9 @@ TEST(AP_Swarm, FormationOffset)
     AP_Swarm swarm;
     swarm.init();
     swarm.set_formation_type(FORMATION_LINE);
-    
+
     Vector3f offset = swarm.get_formation_offset(1);
-    
+
     EXPECT_FLOAT_EQ(offset.x, 5.0f);  // Expected spacing
 }
 
@@ -1333,6 +1405,7 @@ AP_GTEST_MAIN()
 ```
 
 **Run tests**:
+
 ```bash
 ./waf configure --board linux
 ./waf tests
@@ -1345,6 +1418,7 @@ AP_GTEST_MAIN()
 ### 9.1 Code Style
 
 **Follow ArduPilot style guide**:
+
 - Class names: `CamelCase` (e.g., `AP_Swarm`)
 - Member variables: `_leading_underscore` (e.g., `_neighbor_count`)
 - Functions: `snake_case` (e.g., `get_neighbor_count()`)
@@ -1353,6 +1427,7 @@ AP_GTEST_MAIN()
 - Use `float` not `double` (unless precision critical)
 
 **File organization**:
+
 ```cpp
 // Header (.h)
 #pragma once
@@ -1371,11 +1446,13 @@ Function implementations
 ### 9.2 Memory Management
 
 **Stack vs Heap**:
+
 - Prefer stack allocation
 - Avoid `new`/`delete` in flight-critical code
 - Use fixed-size arrays, not dynamic allocation
 
 **Flash size considerations**:
+
 ```cpp
 #if BOARD_FLASH_SIZE > 1024
     // Feature only on large boards
@@ -1385,12 +1462,14 @@ Function implementations
 ### 9.3 Real-Time Considerations
 
 **Avoid in fast loops**:
+
 - No `printf` or string formatting
 - No file I/O
 - No blocking operations
 - Minimize floating point (use lookup tables if possible)
 
 **Use scheduler properly**:
+
 - Fast tasks (<100μs) can run at 400Hz
 - Medium tasks (100-500μs) at 100Hz or less
 - Slow tasks (>500μs) at 10Hz or less
@@ -1398,6 +1477,7 @@ Function implementations
 ### 9.4 Parameter Design
 
 **Make features configurable**:
+
 ```cpp
 // Good
 AP_GROUPINFO("ENABLE", 1, AP_Swarm, _enable, 0),
@@ -1407,6 +1487,7 @@ AP_GROUPINFO("ENABLE", 1, AP_Swarm, _enable, 0),
 ```
 
 **Provide sensible defaults**:
+
 - Defaults should work for most users
 - Advanced features default to OFF
 - Safety-critical features default to SAFE
@@ -1414,6 +1495,7 @@ AP_GROUPINFO("ENABLE", 1, AP_Swarm, _enable, 0),
 ### 9.5 Error Handling
 
 **Check pointers**:
+
 ```cpp
 AP_Swarm* swarm = AP::swarm();
 if (swarm == nullptr) {
@@ -1422,6 +1504,7 @@ if (swarm == nullptr) {
 ```
 
 **Validate inputs**:
+
 ```cpp
 void AP_Swarm::set_separation_distance(float dist) {
     if (dist < 1.0f || dist > 50.0f) {
@@ -1433,6 +1516,7 @@ void AP_Swarm::set_separation_distance(float dist) {
 ```
 
 **Fail gracefully**:
+
 ```cpp
 if (!critical_subsystem_available()) {
     GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "SWARM: Limited functionality");
@@ -1448,6 +1532,7 @@ if (!critical_subsystem_available()) {
 ### 10.1 Common Code Patterns
 
 #### Accessing Core Systems
+
 ```cpp
 // AHRS (attitude, heading, reference)
 AP::ahrs().get_position(current_loc);
@@ -1481,6 +1566,7 @@ GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Message: %d", value);
 ```
 
 #### Time Functions
+
 ```cpp
 uint32_t now_ms = AP_HAL::millis();     // Milliseconds since boot
 uint64_t now_us = AP_HAL::micros64();   // Microseconds since boot
@@ -1492,6 +1578,7 @@ if (AP_HAL::millis() - last_update_ms > TIMEOUT_MS) {
 ```
 
 #### Location/Position Math
+
 ```cpp
 Location loc1, loc2;
 
@@ -1578,6 +1665,7 @@ log download latest
 ### 10.5 Swarm Development Checklist
 
 **Phase 1: Planning**
+
 - [ ] Define swarm architecture (centralized/decentralized/hybrid)
 - [ ] Choose communication method (DDS/MAVLink/both)
 - [ ] Design formation types and transitions
@@ -1585,6 +1673,7 @@ log download latest
 - [ ] Define failsafe behaviors
 
 **Phase 2: Core Implementation**
+
 - [ ] Create AP_Swarm library (or extend existing)
 - [ ] Add neighbor tracking
 - [ ] Implement formation control
@@ -1594,6 +1683,7 @@ log download latest
 - [ ] Implement logging
 
 **Phase 3: Integration**
+
 - [ ] Integrate with flight modes
 - [ ] Add to scheduler
 - [ ] Add GCS/telemetry support
@@ -1601,6 +1691,7 @@ log download latest
 - [ ] Add geofence considerations
 
 **Phase 4: Testing**
+
 - [ ] Unit tests
 - [ ] SITL single vehicle
 - [ ] SITL multi-vehicle (3+)
@@ -1609,6 +1700,7 @@ log download latest
 - [ ] Full swarm test
 
 **Phase 5: Documentation**
+
 - [ ] Code comments
 - [ ] Parameter documentation
 - [ ] Wiki/user guide
@@ -1622,6 +1714,7 @@ log download latest
 ### Complete Example Implementation
 
 **File Structure**:
+
 ```
 libraries/AP_Swarm/
 ├── AP_Swarm.h
@@ -1655,23 +1748,27 @@ ArduCopter/
 ### Common Issues
 
 **Issue**: DDS topics not appearing
+
 - Check `DDS_ENABLE = 1`
 - Verify serial protocol set to 45 (DDS)
 - Ensure Agent is running
 - Check firewall for UDP
 
 **Issue**: Build errors with new library
+
 - Verify `wscript` is correct
 - Check all dependencies listed
 - Ensure `#include` order correct
 - Check for circular dependencies
 
 **Issue**: Parameters not saving
+
 - Check EEPROM not full
 - Verify parameter index unique
 - Use `param fetch` then `param set`
 
 **Issue**: Swarm vehicles colliding
+
 - Increase `SWARM_SEP_DIST`
 - Check `AVOID_ENABLE = 1`
 - Verify neighbor updates received
@@ -1690,12 +1787,14 @@ This document provides a comprehensive foundation for developing autonomous UAV 
 5. **Safety first** - always implement proper failsafes for swarm operations
 
 **Next Steps**:
+
 1. Experiment with SITL multi-vehicle setups
 2. Extend AP_DDS with custom swarm topics
 3. Implement formation control algorithms
 4. Test extensively before field deployment
 
 For questions and community support:
+
 - ArduPilot Discord: https://ardupilot.org/discord
 - ArduPilot Forum: https://discuss.ardupilot.org/
 
